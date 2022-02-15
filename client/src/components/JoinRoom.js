@@ -47,9 +47,9 @@ function JoinRoom() {
             placeholder="Input Name Or Nickname"
             prefix={<UserOutlined />}
           />
-          <button type="submit" style={style.button}>
-            Default Button
-          </button>
+          <Button htmlType="submit" style={style.button}>
+            Submit
+          </Button>
         </form>
       </Col>
     </Row>

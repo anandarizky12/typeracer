@@ -3,6 +3,8 @@ const cors = require("cors");
 const socket = require("socket.io");
 const mongoose = require("mongoose");
 const Game = require("./model/Game");
+const dotenv = require("dotenv");
+dotenv.config();
 
 const getRandomWord = require("./randomWord.js");
 const app = express();
@@ -17,9 +19,11 @@ const io = socket(server, {
     credentials: true,
   },
 });
-// mongodb+srv://admin:<password>@cluster0.qql9i.mongodb.net/myFirstDatabase?retryWrites=true&w=majority
+
+const DB = process.env.db_uri;
+
 mongoose.connect(
-  "mongodb+srv://admin:admin@cluster0.qql9i.mongodb.net/typericer?retryWrites=true&w=majority",
+  DB,
   { useNewUrlParser: true, useUnifiedTopology: true },
   () => {
     console.log("Connected to mongodb");
