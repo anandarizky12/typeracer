@@ -6,7 +6,7 @@ const correct = {
 const getTypedWords = (player, word) => {
   let typedWords = word.slice(0, player.currentWordIndex);
   typedWords = typedWords.join(" ");
-  return <span style={correct}>{typedWords}</span>;
+  return <span style={correct}>{typedWords} </span>;
 };
 
 const currentWord = {

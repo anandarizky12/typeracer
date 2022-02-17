@@ -149,6 +149,7 @@ const startGame = async (gameId) => {
         }
       });
       game = await game.save();
+      io.to(gameId).emit("timer", { countDown: 0, msg: "Game Is Over" });
       io.to(gameId).emit("updateGame", game);
       clearInterval(timer);
     }
