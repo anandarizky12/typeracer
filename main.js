@@ -29,6 +29,38 @@ mongoose.connect(
   }
 );
 io.on("connect", (socket) => {
+  socket.on("userInput", async ({ input, gameId }) => {
+    try {
+      let game = await Game.findById(gameId);
+      if (!game.isOpen && !game.isOver) {
+        let player = game.players.find(
+          (player) => player.socketId === socket.id
+        );
+        let word = game.words[player.currentWordIndex];
+
+        if (input === word) {
+          player.currentWordIndex++;
+          player.score++;
+          if (player.currentWordIndex !== game.words.length) {
+            game = await game.save();
+            io.to(gameId).emit("updateGame", game);
+          } else {
+            let endTime = new Date().getTime();
+            let { startTime } = game;
+            player.WPM = Math.round(
+              (player.currentWordIndex / (endTime - startTime)) * 60000
+            );
+            game = await game.save();
+            socket.emit("done");
+            io.to(gameId).emit("updateGame", game);
+          }
+        }
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  });
+
   socket.on("timer", async ({ gameId, playerId }) => {
     let countDown = 5;
     let game = await Game.findById(gameId);
@@ -99,7 +131,7 @@ const startGame = async (gameId) => {
   game.startTime = new Date().getTime();
   game = await game.save();
 
-  let time = 120;
+  let time = 10;
   let timer = setInterval(async () => {
     if (time >= 0) {
       io.to(gameId).emit("timer", { countDown: time, msg: "Game in Progress" });
