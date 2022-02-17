@@ -14,6 +14,11 @@ function CountDown() {
       socket.removeListeners("timer");
     });
   }, []);
+  useEffect(() => {
+    if (count.countDown > 0) {
+      console.log("Tut");
+    }
+  }, [count]);
 
   console.log("count", count);
 
